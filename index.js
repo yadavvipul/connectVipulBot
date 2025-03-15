@@ -183,24 +183,19 @@ bot.onText(/\/news/, async (msg) => {
     const chatId = msg.chat.id;
 
     try {
-        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=${process.env.NEWS_API_KEY}`;
-        let response = await axios.get(url);
+        const url = `https://newsapi.org/v2/top-headlines?language=en&apiKey=${process.env.NEWS_API_KEY}`;
+        const response = await axios.get(url);
 
-        // If no news found for India, fetch global news
-        if (response.data.totalResults === 0) {
-            url = `https://newsapi.org/v2/top-headlines?apiKey=${process.env.NEWS_API_KEY}`;
-            response = await axios.get(url);
+        console.log("NewsAPI Response:", response.data); // Debugging
+
+        if (!response.data.articles || response.data.articles.length === 0) {
+            return bot.sendMessage(chatId, "❌ No news found at the moment. Try a different category or country.");
         }
 
-        const articles = response.data.articles.slice(0, 5); // Get top 5 articles
-
-        if (articles.length === 0) {
-            return bot.sendMessage(chatId, "❌ No news found at the moment.");
-        }
-
+        const articles = response.data.articles.slice(0, 5); // Show top 5 articles
         let newsMessage = "📰 *Top News Headlines:*\n\n";
         articles.forEach((article, index) => {
-            newsMessage += `*${index + 1}. [${article.title}](${article.url})*\n`;
+            newsMessage += `*${index + 1}.* [${article.title}](${article.url})\n`;
         });
 
         bot.sendMessage(chatId, newsMessage, { parse_mode: "Markdown", disable_web_page_preview: true });
@@ -209,6 +204,7 @@ bot.onText(/\/news/, async (msg) => {
         bot.sendMessage(chatId, "❌ Sorry, I couldn't fetch the latest news. Try again later.");
     }
 });
+
 
 
 
