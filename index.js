@@ -1,7 +1,8 @@
+require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const chatData = require("./data.json"); // Your local JSON file
 
-const TOKEN = process.env.BOT_TOKEN; // Fetch token from .env file
+const TOKEN = process.env.TOKEN; // Fetch token from .env file
 const bot = new TelegramBot(TOKEN, { polling: true });
 
 // Send Help Message on Start
