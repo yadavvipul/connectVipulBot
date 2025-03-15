@@ -32,6 +32,7 @@ bot.onText(/\/help/, (msg) => {
   📄 *Document Templates:* Use /doc [type] (e.g., /doc meeting notes)
   💬 *Conversation Starters:* Use /talk [topic] (e.g., /talk promotion discussion)
   💡 *Professional Responses:* Use /reply [situation] (e.g., /reply declining extra work)
+   *checkWeather: /weather pune*
   
   ⚡ Example Usage:
   /email meeting request
@@ -175,6 +176,30 @@ bot.onText(/\/weather (.+)/, async (msg, match) => {
         } else {
             bot.sendMessage(chatId, "❌ Unable to fetch weather. Please check your internet connection.");
         }
+    }
+});
+//newbot
+bot.onText(/\/news/, async (msg) => {
+    const chatId = msg.chat.id;
+
+    try {
+        const url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=${process.env.NEWS_API_KEY}`;
+        const response = await axios.get(url);
+        const articles = response.data.articles.slice(0, 5); // Get top 5 news
+
+        if (articles.length === 0) {
+            return bot.sendMessage(chatId, "❌ No news found at the moment.");
+        }
+
+        let newsMessage = "📰 *Top News Headlines:*\n\n";
+        articles.forEach((article, index) => {
+            newsMessage += `*${index + 1}. [${article.title}](${article.url})*\n`;
+        });
+
+        bot.sendMessage(chatId, newsMessage, { parse_mode: "Markdown", disable_web_page_preview: true });
+    } catch (error) {
+        console.error("News Fetch Error:", error);
+        bot.sendMessage(chatId, "❌ Sorry, I couldn't fetch the latest news. Try again later.");
     }
 });
 
