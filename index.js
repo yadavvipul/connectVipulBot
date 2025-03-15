@@ -21,28 +21,44 @@ bot.onText(/\/start/, (msg) => {
   });
 
 // 📖 Help Command
+// 📖 Help Command
 bot.onText(/\/help/, (msg) => {
     const chatId = msg.chat.id;
     const helpMessage = `🤖 *Welcome to the Telegram Bot!*
   
-  Here are the commands you can use:
-  
-  🔍 *Search Contact Info:* Just type a name to find contact details.
-  📧 *Email Templates:* Use /email [type] (e.g., /email requesting leave)
-  📄 *Document Templates:* Use /doc [type] (e.g., /doc meeting notes)
-  💬 *Conversation Starters:* Use /talk [topic] (e.g., /talk promotion discussion)
-  💡 *Professional Responses:* Use /reply [situation] (e.g., /reply declining extra work)
-   *checkWeather: /weather pune*
-  
-  ⚡ Example Usage:
-  /email meeting request
-  /doc project report
-  /talk team conflict
-  /reply appreciation
-  
-  Enjoy using the bot! 🚀`;
+Here are the commands you can use:
+
+🔍 *Search Contact Info:* Just type a name to find contact details.
+📧 *Email Templates:* Use /email [type] (e.g., /email requesting leave)
+📄 *Document Templates:* Use /doc [type] (e.g., /doc meeting notes)
+💬 *Conversation Starters:* Use /talk [topic] (e.g., /talk promotion discussion)
+💡 *Professional Responses:* Use /reply [situation] (e.g., /reply declining extra work)
+🌦 *Weather Updates:* Use /weather [city] (e.g., /weather Pune)
+📰 *Category-wise News:* Use /news [category] (e.g., /news sports)
+🍽️ *Pakoda Recipe:* Use /pakoda to get a delicious recipe!
+
+📌 *Available News Categories:*
+- business
+- entertainment
+- health
+- science
+- sports
+- technology
+
+⚡ Example Usage:
+- /email meeting request
+- /doc project report
+- /talk team conflict
+- /reply appreciation
+- /weather Mumbai
+- /news technology
+- /pakoda
+
+Enjoy using the bot! 🚀`;
+
     bot.sendMessage(chatId, helpMessage, { parse_mode: "Markdown" });
-  });
+});
+
 
 
 // bot.on("message", (msg) => {
