@@ -178,22 +178,32 @@ bot.onText(/\/weather (.+)/, async (msg, match) => {
         }
     }
 });
+
 //newbot
-bot.onText(/\/news/, async (msg) => {
+bot.onText(/\/news (\w+)/, async (msg, match) => {
     const chatId = msg.chat.id;
+    const category = match[1].toLowerCase(); // Extract category from command
+
+    // Allowed categories
+    const validCategories = ["business", "entertainment", "health", "science", "sports", "technology"];
+
+    if (!validCategories.includes(category)) {
+        return bot.sendMessage(
+            chatId,
+            `❌ Invalid category. Please choose from:\n\n${validCategories.map((c) => `- ${c}`).join("\n")}`
+        );
+    }
 
     try {
-        const url = `https://newsapi.org/v2/top-headlines?language=en&apiKey=${process.env.NEWS_API_KEY}`;
+        const url = `https://newsapi.org/v2/top-headlines?category=${category}&language=en&apiKey=${process.env.NEWS_API_KEY}`;
         const response = await axios.get(url);
 
-        console.log("NewsAPI Response:", response.data); // Debugging
-
         if (!response.data.articles || response.data.articles.length === 0) {
-            return bot.sendMessage(chatId, "❌ No news found at the moment. Try a different category or country.");
+            return bot.sendMessage(chatId, `❌ No ${category} news found at the moment.`);
         }
 
         const articles = response.data.articles.slice(0, 5); // Show top 5 articles
-        let newsMessage = "📰 *Top News Headlines:*\n\n";
+        let newsMessage = `📰 *Top ${category.charAt(0).toUpperCase() + category.slice(1)} News:*\n\n`;
         articles.forEach((article, index) => {
             newsMessage += `*${index + 1}.* [${article.title}](${article.url})\n`;
         });
@@ -204,6 +214,7 @@ bot.onText(/\/news/, async (msg) => {
         bot.sendMessage(chatId, "❌ Sorry, I couldn't fetch the latest news. Try again later.");
     }
 });
+
 
 
 
