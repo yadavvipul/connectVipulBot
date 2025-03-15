@@ -1,8 +1,11 @@
 require("dotenv").config();
+const axios = require("axios");
+
 const TelegramBot = require("node-telegram-bot-api");
 const chatData = require("./data.json"); // Your local JSON file
 
 const TOKEN = process.env.TOKEN; // Fetch token from .env file
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const bot = new TelegramBot(TOKEN, { polling: true });
 
 // Send Help Message on Start
@@ -145,5 +148,29 @@ bot.onText(/\/pakoda/, (msg) => {
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, pakodaRecipe, { parse_mode: "Markdown" });
 });
+
+bot.onText(/\/weather (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const city = match[1];
+
+    try {
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${WEATHER_API_KEY}&units=metric`;
+        const response = await axios.get(url);
+        const weather = response.data;
+
+        const weatherMessage = `
+🌍 *Weather in ${weather.name}, ${weather.sys.country}*  
+🌡️ *Temperature:* ${weather.main.temp}°C  
+🌬️ *Wind Speed:* ${weather.wind.speed} m/s  
+💧 *Humidity:* ${weather.main.humidity}%  
+☁️ *Condition:* ${weather.weather[0].description}  
+        `;
+
+        bot.sendMessage(chatId, weatherMessage, { parse_mode: "Markdown" });
+    } catch (error) {
+        bot.sendMessage(chatId, "❌ Sorry, I couldn't fetch the weather. Check the city name and try again.");
+    }
+});
+
 
 console.log("Telegram bot is running...");
