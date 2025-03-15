@@ -168,9 +168,16 @@ bot.onText(/\/weather (.+)/, async (msg, match) => {
 
         bot.sendMessage(chatId, weatherMessage, { parse_mode: "Markdown" });
     } catch (error) {
-        bot.sendMessage(chatId, "❌ Sorry, I couldn't fetch the weather. Check the city name and try again.");
+        if (error.response && error.response.status === 404) {
+            bot.sendMessage(chatId, "❌ City not found! Please enter a valid city name.");
+        } else if (error.response) {
+            bot.sendMessage(chatId, "❌ OpenWeather API error. Try again later.");
+        } else {
+            bot.sendMessage(chatId, "❌ Unable to fetch weather. Please check your internet connection.");
+        }
     }
 });
+
 
 
 console.log("Telegram bot is running...");
